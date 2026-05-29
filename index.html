@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPlan - Smart School Planner</title>
+    <meta name="description" content="A modern, simple, and mobile-friendly school planner web app to organize assignments, track due dates, and monitor your academic progress.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Dashboard Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo-area">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    </div>
+                    <h1>EduPlan</h1>
+                </div>
+                <p class="current-date" id="currentDateDisplay">Friday, May 29, 2026</p>
+            </div>
+            
+            <div class="header-right">
+                <button class="btn btn-primary" id="openAddModalBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-icon"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>New Assignment</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Overview Dashboard -->
+        <section class="stats-dashboard" aria-label="Planner Statistics">
+            <div class="stat-card">
+                <div class="stat-icon pending-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Pending</span>
+                    <span class="stat-value" id="statsPending">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon completed-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Completed</span>
+                    <span class="stat-value" id="statsCompleted">0</span>
+                </div>
+            </div>
+            <div class="stat-card progress-stat-card">
+                <div class="progress-ring-container">
+                    <svg class="progress-ring" width="60" height="60">
+                        <circle class="progress-ring-bg" stroke="rgba(255, 255, 255, 0.08)" stroke-width="6" fill="transparent" r="24" cx="30" cy="30"/>
+                        <circle class="progress-ring-bar" id="progressCircle" stroke="url(#gradientAccent)" stroke-width="6" fill="transparent" r="24" cx="30" cy="30" stroke-dasharray="150.79" stroke-dashoffset="150.79" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="gradientAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#8b5cf6" />
+                                <stop offset="100%" stop-color="#3b82f6" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="progress-percentage" id="progressPercentageText">0%</span>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Completion Rate</span>
+                    <span class="stat-value-desc" id="progressRating">No assignments yet</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Workspace: Controls & Task List -->
+        <main class="planner-workspace">
+            <!-- Filter & Search Controls -->
+            <div class="control-panel">
+                <div class="search-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="searchInput" placeholder="Search assignments..." aria-label="Search assignments">
+                </div>
+                
+                <div class="filter-sort-controls">
+                    <!-- Category Tabs -->
+                    <div class="filter-tabs" role="tablist">
+                        <button class="tab-btn active" role="tab" aria-selected="true" data-filter="all">All</button>
+                        <button class="tab-btn" role="tab" aria-selected="false" data-filter="pending">Pending</button>
+                        <button class="tab-btn" role="tab" aria-selected="false" data-filter="completed">Completed</button>
+                    </div>
+
+                    <!-- Sort Dropdown -->
+                    <div class="sort-wrapper">
+                        <label for="sortSelect" class="visually-hidden">Sort by</label>
+                        <select id="sortSelect" class="select-input">
+                            <option value="dueDateAsc">Due Date (Soonest)</option>
+                            <option value="dueDateDesc">Due Date (Furthest)</option>
+                            <option value="priorityDesc">Priority (High to Low)</option>
+                            <option value="priorityAsc">Priority (Low to High)</option>
+                            <option value="titleAsc">Alphabetical (A-Z)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task List Section -->
+            <section class="task-section">
+                <div id="taskList" class="task-list">
+                    <!-- Task Cards will be generated dynamically via JavaScript -->
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Loading assignments...</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Assignment Modal (Add & Edit) -->
+    <div class="modal-overlay" id="assignmentModal" aria-hidden="true" role="dialog">
+        <div class="modal-card">
+            <header class="modal-header">
+                <h2 id="modalTitle">Add New Assignment</h2>
+                <button class="btn-close" id="closeModalBtn" aria-label="Close dialog">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </header>
+            
+            <form id="assignmentForm" novalidate>
+                <input type="hidden" id="assignmentId">
+                
+                <div class="form-group">
+                    <label for="title">Assignment Title *</label>
+                    <input type="text" id="title" required placeholder="e.g. Physics Lab Report" autocomplete="off">
+                    <span class="error-msg" id="titleError">Title is required.</span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="subject">Subject / Class *</label>
+                        <select id="subject" required>
+                            <option value="" disabled selected>Select Subject</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Science">Science (Physics/Chemistry/Biology)</option>
+                            <option value="English">English / Literature</option>
+                            <option value="History">History / Social Studies</option>
+                            <option value="ComputerScience">Computer Science</option>
+                            <option value="Languages">Foreign Languages</option>
+                            <option value="Arts">Arts / Music</option>
+                            <option value="Other">Other / General</option>
+                        </select>
+                        <span class="error-msg" id="subjectError">Subject is required.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="priority">Priority Level</label>
+                        <select id="priority">
+                            <option value="low">Low Priority</option>
+                            <option value="medium" selected>Medium Priority</option>
+                            <option value="high">High Priority</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="dueDate">Due Date *</label>
+                    <input type="date" id="dueDate" required>
+                    <span class="error-msg" id="dueDateError">Valid due date is required.</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Notes / Instructions (Optional)</label>
+                    <textarea id="notes" rows="4" placeholder="Add assignment details, requirements, links, etc..."></textarea>
+                </div>
+
+                <footer class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveAssignmentBtn">Save Assignment</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toastNotification" class="toast" aria-live="polite">
+        <span id="toastMessage">Task updated successfully!</span>
+    </div>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>
